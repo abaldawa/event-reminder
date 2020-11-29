@@ -1,22 +1,23 @@
 import { io as socketIoClient, Socket } from 'socket.io-client';
 import moment from 'moment-timezone';
 
-// Commands supported by Websocket server
+// Supported commands by event-reminder server
 enum Commands {
     scheduleEvent = 'scheduleEvent',
     getAllTimeZones = 'getAllTimeZones',
 }
 
-// Server response for scheduleEvent command
+// Event reminder type on server
 interface EventReminder {
   name: string;
   time: string;
   _id: string;
 }
 
-// Server response for getAllTimeZones command
+// Timezones type
 type TimeZones = string[];
 
+// event-reminder server response structure for any emitted command
 interface WebSocketServerResponse {
     status: 'success' | 'failure';
     response?: EventReminder | TimeZones;
@@ -24,6 +25,7 @@ interface WebSocketServerResponse {
 }
 
 const WEB_SOCKET_SERVER_PORT = 3000;
+const WEBSOCKET_SERVER_URL = `ws://localhost:${WEB_SOCKET_SERVER_PORT}`;
 
 /**
  * Returns future time
@@ -78,7 +80,7 @@ const timeZoneFlag = (): boolean => process.argv.includes('-timeZone');
 const getAndLogTimeZones = async (): Promise<void> => {
     console.log(`Getting timezones via command: '${Commands.getAllTimeZones}' from websocket server`);
 
-    const socketClient = await getLiveSocketClient(`ws://localhost:${WEB_SOCKET_SERVER_PORT}`);
+    const socketClient = await getLiveSocketClient(WEBSOCKET_SERVER_URL);
     const serverResponse = await new Promise<WebSocketServerResponse>( (resolve) => {
         socketClient.emit(
             'command',
@@ -111,7 +113,7 @@ const scheduleAndListenToReminders = async () => {
         timeZone: moment.tz.guess(),
         eventName: 'Dummy event',
     };
-    const socketClient = await getLiveSocketClient(`ws://localhost:${WEB_SOCKET_SERVER_PORT}`);
+    const socketClient = await getLiveSocketClient(WEBSOCKET_SERVER_URL);
 
     /**
      * NOTE: If user has explicitly set to only listen for event reminders
