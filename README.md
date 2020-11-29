@@ -115,7 +115,7 @@ Use this repo to test event-reminder websocket server by getting all ***timezone
 ### Architecture:
 The event-reminder server is architected in a way that it is modular, loosely coupled, testable and reusable. 
 
-***_1] Scheduler (event-reminder/src/scheduler/index.ts)_***
+***_1] Scheduler (event-reminder/src/scheduler/index.ts)_***  
 Scheduler module is an event emitter and it reads schedules config from cronJobs.json. Once started schedule will emit events for schedules whose time has reached. It is the job of scheduler handlers (**event-reminder/src/scheduler/handlers**) to listen to those events and handle them. The advantage of this approach is that scheduler module is completely decoupled from the listeners so scaling and adding a new schedule is as simple as below:  
     - Add a new schedule config in cronJobs.json  
     - Create a new schedule handler file in **event-reminder/src/scheduler/handlers** which will handle the newly added schedule above and expose a listen method  
