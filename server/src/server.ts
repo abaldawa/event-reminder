@@ -12,9 +12,11 @@ import scheduler from './scheduler';
 import logger from './logger';
 
 /**
- * Immediately invoking async method which does all the standard server startup routine.
+ * @public
+ *
+ * Async method which does all the standard server startup routine.
  */
-(async () => {
+const start = async (): Promise<void> => {
   try {
     const PORT = getPort();
     const mongoDbConfig = getMongoDbConfig();
@@ -39,4 +41,10 @@ import logger from './logger';
     );
     process.exit(1);
   }
-})();
+};
+
+if (require.main === module) {
+  start();
+}
+
+export { start };
