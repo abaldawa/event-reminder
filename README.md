@@ -23,7 +23,7 @@ A socket.io based websocket server to schedule events and get reminded about tho
 
 **_Note: Node.js 14.15.1 and mongodb server must be installed and mongoDB must be up and running_**
 1. **git clone https://github.com/abaldawa/event-reminder.git**
-2. **cd event-reminder**
+2. **cd event-reminder/server**
 3. execute "**npm i**" in the terminal path to install node modules
 4. **cp .env.example .env**
 5. Execute "**vi .env**" and as a value for '***DB_PORT***' check and update the port on which mongoDB server is running, save the file and exit.
@@ -115,21 +115,21 @@ Use this repo to test event-reminder websocket server by getting all ***timezone
 ### Architecture:
 The event-reminder server is architected in a way that it is modular, loosely coupled, testable and reusable. 
 
-***_1] Scheduler (event-reminder/src/scheduler/index.ts)_***  
-Scheduler module is an event emitter and it reads schedules config from cronJobs.json. Once started schedule will emit events for schedules whose time has reached. It is the job of scheduler handlers (**event-reminder/src/scheduler/handlers**) to listen to those events and handle them. The advantage of this approach is that scheduler module is completely decoupled from the listeners so scaling and adding a new schedule is as simple as below:  
+***_1] Scheduler (event-reminder/server/src/scheduler/index.ts)_***  
+Scheduler module is an event emitter and it reads schedules config from cronJobs.json. Once started schedule will emit events for schedules whose time has reached. It is the job of scheduler handlers (**event-reminder/server/src/scheduler/handlers**) to listen to those events and handle them. The advantage of this approach is that scheduler module is completely decoupled from the listeners so scaling and adding a new schedule is as simple as below:  
     - Add a new schedule config in cronJobs.json  
-    - Create a new schedule handler file in **event-reminder/src/scheduler/handlers** which will handle the newly added schedule above and expose a listen method  
+    - Create a new schedule handler file in **event-reminder/server/src/scheduler/handlers** which will handle the newly added schedule above and expose a listen method  
       which will accept scheduler instance so that it can subscribe to the newly created event emitter by scheduler.  
-    - Import the newly created schedule event handler listen method in its index.ts (**event-reminder/src/scheduler/handlers/index.ts**) and call the listen method 
+    - Import the newly created schedule event handler listen method in its index.ts (**event-reminder/server/src/scheduler/handlers/index.ts**) and call the listen method 
       with scheduler instance thats all. 
       
-***_2]Websocket (event-reminder/src/websocket)_*** 
+***_2]Websocket (event-reminder/server/src/websocket)_*** 
 This module contains socket.io server (in **server.ts** file) and websocket message handler (in **messageHandler.ts** file)
 
-***_3] Models (event-reminder/src/scheduler/database/models)_***
+***_3] Models (event-reminder/server/src/scheduler/database/models)_***
 Models exposes methods to perform CRUD operations on database using ORM/ODM. In this case it is mongoose.
 
-***_4]Services (events-reminder/src/services)_***
+***_4]Services (events-reminder/server/src/services)_***
 Services holds the business logic for different entities/collections in database. They consume models to build business logic for those specific entities. 
 
 ***Architecture of the event-reminder server is as below***:
