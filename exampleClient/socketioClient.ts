@@ -73,6 +73,7 @@ const timeZoneFlag = (): boolean => process.argv.includes('-timeZone');
 
 /**
  * Fetches all time Zones from websocket server and logs it
+ * NOTE: Will only be executed if '-timeZone' flag is passed
  */
 const getAndLogTimeZones = async (): Promise<void> => {
     console.log(`Getting timezones via command: '${Commands.getAllTimeZones}' from websocket server`);
@@ -98,7 +99,11 @@ const getAndLogTimeZones = async (): Promise<void> => {
 };
 
 /**
+ * By default schedules an event reminder for the next minute on the websocket server
+ * logs the event reminder received from the server.
  *
+ * If '-onlyListen' flag is passed then will only listen for event reminders from
+ * the websocket server
  */
 const scheduleAndListenToReminders = async () => {
     console.log(`Executing command: '${Commands.scheduleEvent}' on websocket server`);
