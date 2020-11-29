@@ -94,7 +94,6 @@ const getAndLogTimeZones = async (): Promise<void> => {
     } else {
         console.log(`${Commands.getAllTimeZones}: Server response= ${JSON.stringify(serverResponse.response as TimeZones)}`);
     }
-    console.log('Exiting...');
     socketClient.disconnect();
 };
 
@@ -106,8 +105,6 @@ const getAndLogTimeZones = async (): Promise<void> => {
  * the websocket server
  */
 const scheduleAndListenToReminders = async () => {
-    console.log(`Executing command: '${Commands.scheduleEvent}' on websocket server`);
-
     const dateTimeFormat = 'YYYY-MM-DD HH:mm';
     const event = {
         time: getFutureTime(1, dateTimeFormat), // Get reminder after 1 minute from now
@@ -121,6 +118,8 @@ const scheduleAndListenToReminders = async () => {
      * then do not schedule event event reminders on the websocket server
      */
     if(!onlyListenFlag()) {
+        console.log(`Executing command: '${Commands.scheduleEvent}' on websocket server`);
+
         const serverResponse = await new Promise<WebSocketServerResponse>( (resolve) => {
             socketClient.emit(
                 'command',
