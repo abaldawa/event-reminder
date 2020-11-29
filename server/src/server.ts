@@ -39,7 +39,6 @@ const start = async (): Promise<void> => {
     logger.error(
       `Error while starting server. Error: ${(err as Error).stack}. Exiting...`
     );
-    process.exit(1);
   }
 };
 
