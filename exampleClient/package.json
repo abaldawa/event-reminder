@@ -4,12 +4,21 @@
   "description": "An example package showing socket.io client connection with event scheduler websocket server",
   "main": "socketioClient.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "rimraf ./build",
+    "build": "npm run clean && node_modules/.bin/tsc",
+    "getTimeZones": "NODE_OPTIONS=--enable-source-maps node ./build/socketioClient.js -timeZone",
+    "scheduleEvent": "NODE_OPTIONS=--enable-source-maps node ./build/socketioClient.js",
+    "listenForReminders": "NODE_OPTIONS=--enable-source-maps node ./build/socketioClient.js -onlyListen"
   },
   "author": "Abhijit Baldawa",
   "license": "ISC",
   "dependencies": {
     "moment-timezone": "^0.5.32",
+    "rimraf": "^3.0.2",
     "socket.io-client": "^3.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.10",
+    "typescript": "^4.1.2"
   }
 }
