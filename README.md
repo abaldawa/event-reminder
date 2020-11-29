@@ -111,3 +111,29 @@ Use this repo to test event-reminder websocket server by getting all ***timezone
 **5]** run "***npm run scheduleEvent***" (Schedules an event for the next clock minute on the event-reminder server. Once the next clock minute is reached an event reminder is notified to all the connected websocket clients and it is logged on console. Technically the user can create an event reminder for ANY date in the future. In this case scheduled for next minute just so to speed up the manual testing)
 
 **6]** run "***npm run listenForReminders***" (With this command socket.io-client is ONLY listening for 'eventReminder' events and logging it on the console. It does not schedule any event. Use this if you want to ONLY listen for event reminders. If as a use you want to schedule event reminder for the next minute and also get notified at the same time then use ***npm run scheduleEvent*** as mentioned in point ***(5)***)
+
+### Architecture:
+The event-reminder server is architected in a way that it is modular, loosely coupled, testable and reusable. 
+
+***_1] Scheduler (event-reminder/src/scheduler/index.ts)_***
+Scheduler module is an event emitter and it reads schedules config from cronJobs.json. Once started schedule will emit events for schedules whose time has reached. It is the job of scheduler handlers (**event-reminder/src/scheduler/handlers**) to listen to those events and handle them. The advantage of this approach is that scheduler module is completely decoupled from the listeners so scaling and adding a new schedule is as simple as below:  
+    - Add a new schedule config in cronJobs.json  
+    - Create a new schedule handler file in **event-reminder/src/scheduler/handlers** which will handle the newly added schedule above and expose a listen method  
+      which will accept scheduler instance so that it can subscribe to the newly created event emitter by scheduler.  
+    - Import the newly created schedule event handler listen method in its index.ts (**event-reminder/src/scheduler/handlers/index.ts**) and call the listen method 
+      with scheduler instance thats all. 
+      
+***_2]Websocket (event-reminder/src/websocket)*** 
+This module contains socket.io server (in **server.ts** file) and websocket message handler (in **messageHandler.ts** file)
+
+***_3] Models (event-reminder/src/scheduler/database/models)_***
+Models exposes methods to perform CRUD operations on database using ORM/ODM. In this case it is mongoose.
+
+***_4]Services (events-reminder/src/services)_***
+Services holds the business logic for different entities/collections in database. They consume models to build business logic for those specific entities. 
+
+***Architecture of the event-reminder server is as below***:
+
+![github-largs](https://user-images.githubusercontent.com/5449692/100554881-35905000-3298-11eb-91b4-241bcb200205.png)
+
+
