@@ -1,0 +1,6 @@
+{
+  "eventReminder": {
+    "cronName": "eventReminder",
+    "cronTime": "00 * * * * *"
+  }
+}

@@ -1,0 +1,62 @@
+{
+    "env": {
+        "es2020": true,
+        "node": true,
+        "jest": false
+    },
+    "extends": [
+        "airbnb-base",
+        "eslint:recommended",
+        "prettier",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "prettier/@typescript-eslint",
+        "plugin:prettier/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": 2020,
+        "sourceType": "module",
+        "project": "./tsconfig.json"
+    },
+    "plugins": [
+        "@typescript-eslint",
+        "prettier"
+    ],
+    "rules": {
+        "prettier/prettier": "error",
+        "import/extensions": [
+            "error",
+            "ignorePackages",
+            {
+                "js": "never",
+                "jsx": "never",
+                "ts": "never",
+                "tsx": "never"
+            }
+        ],
+        "import/prefer-default-export": "off",
+        "no-restricted-syntax": "off",
+        "no-shadow": "off",
+        "@typescript-eslint/no-shadow": "error",
+        "no-case-declarations": "off"
+    },
+    "ignorePatterns": [
+        "node_modules",
+        "build",
+        "test",
+        "jest.**"
+    ],
+    "settings": {
+        "import/extensions": [".ts"],
+        "import/parsers": {
+            "@typescript-eslint/parser": [".ts"]
+        },
+        "import/resolver": {
+            "node": {
+                "extensions": [".ts"],
+                "moduleDirectory": ["./node_modules", "./src/"]
+            }
+        }
+    }
+}
