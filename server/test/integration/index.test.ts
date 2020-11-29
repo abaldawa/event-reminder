@@ -109,7 +109,7 @@ describe('Integration test', () => {
     socketClient = await getLiveSocketClient(WEBSOCKET_SERVER_URL);
   });
 
-  afterEach(async () => {
+  afterEach( () => {
     socketClient.disconnect();
   });
 
