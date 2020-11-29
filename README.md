@@ -123,7 +123,7 @@ Scheduler module is an event emitter and it reads schedules config from cronJobs
     - Import the newly created schedule event handler listen method in its index.ts (**event-reminder/src/scheduler/handlers/index.ts**) and call the listen method 
       with scheduler instance thats all. 
       
-***_2]Websocket (event-reminder/src/websocket)*** 
+***_2]Websocket (event-reminder/src/websocket)_*** 
 This module contains socket.io server (in **server.ts** file) and websocket message handler (in **messageHandler.ts** file)
 
 ***_3] Models (event-reminder/src/scheduler/database/models)_***
