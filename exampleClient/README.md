@@ -1,1 +1,0 @@
-# event-reminder example client
