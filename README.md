@@ -29,7 +29,7 @@ A socket.io based websocket server to schedule events and get reminded about tho
 5. Execute "**vi .env**" and as a value for '***DB_PORT***' check and update the port on which mongoDB server is running, save the file and exit.
 6. Execute "**npm run start**" and it will start the websocket server on port **3000** (or the one you have updated in **.env** file)
 
-**_NOTE:** To run both unit tests and integration tests execute "**npm run test**"
+**_NOTE:_** To run both unit tests and integration tests execute "**_npm run test_**"
 
 Once the server is running (assuming say on port 3000), a [socket.io-client](https://github.com/socketio/socket.io-client) can be used to create websocket connection to the socket.io based event-reminder websocket server at **ws://localhost:3000**
 
