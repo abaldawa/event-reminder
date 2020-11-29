@@ -69,10 +69,12 @@ describe('Integration test', () => {
   const eventName = 'Test event';
   const dateTimeFormat = 'YYYY-MM-DD HH:mm';
   const WEBSOCKET_PORT = 3001;
+  const WEBSOCKET_SERVER_URL = `ws://localhost:${WEBSOCKET_PORT}`;
   const currentTimeZone = moment.tz.guess();
 
   let fakeTimer: sinon.SinonFakeTimers;
   let httpServer: http.Server;
+  let socketClient: Socket;
 
   beforeAll(async () => {
     /**
@@ -103,8 +105,15 @@ describe('Integration test', () => {
     });
   });
 
+  beforeEach(async () => {
+    socketClient = await getLiveSocketClient(WEBSOCKET_SERVER_URL);
+  });
+
+  afterEach(async () => {
+    socketClient.disconnect();
+  });
+
   it('Websocket server should respond with error if input is not valid JSON', async () => {
-    const socketClient = await getLiveSocketClient(`ws://localhost:${WEBSOCKET_PORT}`);
     const serverResponse = await new Promise<WebSocketServerResponse>( (resolve) => {
       socketClient.emit(
         'command',
@@ -113,8 +122,6 @@ describe('Integration test', () => {
       );
     } );
 
-    socketClient.disconnect();
-
     expect(serverResponse).toEqual({
       status: 'failure',
       error: expect.stringMatching(/Invalid message passed/)
@@ -122,7 +129,6 @@ describe('Integration test', () => {
   });
 
   it(`Websocket server should respond with error if input JSON does not have 'command' property`, async () => {
-    const socketClient = await getLiveSocketClient(`ws://localhost:${WEBSOCKET_PORT}`);
     const serverResponse = await new Promise<WebSocketServerResponse>( (resolve) => {
       socketClient.emit(
         'command',
@@ -131,8 +137,6 @@ describe('Integration test', () => {
       );
     } );
 
-    socketClient.disconnect();
-
     expect(serverResponse).toEqual({
       status: 'failure',
       error: expect.stringMatching(/Invalid message passed/)
@@ -140,7 +144,6 @@ describe('Integration test', () => {
   });
 
   it(`Websocket server should respond with un-recognised command for non supported 'command' property`, async () => {
-    const socketClient = await getLiveSocketClient(`ws://localhost:${WEBSOCKET_PORT}`);
     const serverResponse = await new Promise<WebSocketServerResponse>( (resolve) => {
       socketClient.emit(
         'command',
@@ -149,8 +152,6 @@ describe('Integration test', () => {
       );
     } );
 
-    socketClient.disconnect();
-
     expect(serverResponse).toEqual({
       status: 'failure',
       error: 'un-recognized command'
@@ -158,7 +159,6 @@ describe('Integration test', () => {
   });
 
   it(`Websocket server should respond with all timezones for 'getAllTimeZones' command`, async () => {
-    const socketClient = await getLiveSocketClient(`ws://localhost:${WEBSOCKET_PORT}`);
     const serverResponse = await new Promise<WebSocketServerResponse>( (resolve) => {
       socketClient.emit(
         'command',
@@ -166,8 +166,6 @@ describe('Integration test', () => {
         resolve
       );
     } );
-
-    socketClient.disconnect();
 
     expect(serverResponse).toEqual({
       status: 'success',
@@ -184,7 +182,6 @@ describe('Integration test', () => {
    websocket server should persist and successfully remind that event after 3 hours`, async () => {
     const HOURS_TO_WAIT = 3;
     const eventTime = getFutureTime(HOURS_TO_WAIT, dateTimeFormat);
-    const socketClient = await getLiveSocketClient(`ws://localhost:${WEBSOCKET_PORT}`);
 
     // 1. Emit websocket event to schedule an event 3 hours from now
     const serverResponse = await new Promise<WebSocketServerResponse>( (resolve) => {
@@ -221,9 +218,6 @@ describe('Integration test', () => {
     } );
 
     expect(reminder).toEqual(serverResponse.response as EventsDB);
-
-    // 4. Disconnect the client websocket from server
-    socketClient.disconnect();
   });
 
   it(`For future event 5 hours from now, with 'scheduleEvent' command websocket server should\
@@ -231,7 +225,6 @@ describe('Integration test', () => {
     const HOURS_TO_WAIT = 5;
     const eventTime = getFutureTime(HOURS_TO_WAIT, dateTimeFormat);
     const socketClients: Socket[] = [];
-    const socketClient = await getLiveSocketClient(`ws://localhost:${WEBSOCKET_PORT}`);
 
     socketClients.push(socketClient);
 
@@ -265,7 +258,7 @@ describe('Integration test', () => {
 
     // 3. Create 4 more additional websocket socket.io clients to the websocket (socket.io) server
     for (const _ of Array(4)) {
-      socketClients.push(await getLiveSocketClient(`ws://localhost:${WEBSOCKET_PORT}`));
+      socketClients.push(await getLiveSocketClient(WEBSOCKET_SERVER_URL));
     }
 
     // 4. Check whether ALL the connected websocket clients get reminded about the event after 5 hours
