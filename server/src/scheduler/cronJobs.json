@@ -1,6 +1,7 @@
 {
   "eventReminder": {
     "cronName": "eventReminder",
+    "description": "Fires every minute and checks for any current event reminders in the DB to be notified",
     "cronTime": "00 * * * * *"
   }
 }
