@@ -1,0 +1,15 @@
+{
+  "name": "socketio-client-example",
+  "version": "1.0.0",
+  "description": "An example package showing socket.io client connection with event scheduler websocket server",
+  "main": "socketioClient.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Abhijit Baldawa",
+  "license": "ISC",
+  "dependencies": {
+    "moment-timezone": "^0.5.32",
+    "socket.io-client": "^3.0.3"
+  }
+}
