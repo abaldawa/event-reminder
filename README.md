@@ -116,12 +116,23 @@ Use this repo to test event-reminder websocket server by getting all ***timezone
 The event-reminder server is architected in a way that it is modular, loosely coupled, testable and reusable. 
 
 ***_1] Scheduler (event-reminder/server/src/scheduler/index.ts)_***  
-Scheduler module is an event emitter and it reads schedules config from cronJobs.json. Once started schedule will emit events for schedules whose time has reached. It is the job of scheduler handlers (**event-reminder/server/src/scheduler/handlers**) to listen to those events and handle them. The advantage of this approach is that scheduler module is completely decoupled from the listeners so scaling and adding a new schedule is as simple as below:  
+Scheduler module is an event emitter and it reads schedules config from cronJobs.json. Once started scheduler will emit events for schedules whose time has reached. It is the job of scheduler handlers (**event-reminder/server/src/scheduler/handlers**) to listen to those events and handle them. The advantage of this approach is that the scheduler module is completely decoupled from the listeners so scaling and adding a new schedule is as simple as below:  
     - Add a new schedule config in cronJobs.json  
-    - Create a new schedule handler file in **event-reminder/server/src/scheduler/handlers** which will handle the newly added schedule above and expose a listen method  
-      which will accept scheduler instance so that it can subscribe to the newly created event emitter by scheduler.  
-    - Import the newly created schedule event handler listen method in its index.ts (**event-reminder/server/src/scheduler/handlers/index.ts**) and call the listen method 
-      with scheduler instance thats all. 
+    - Create a new schedule handler file in **event-reminder/server/src/scheduler/handlers** which will handle the newly added schedule above and expose a listen method
+      which will accept scheduler instance so that it can subscribe to the newly created schedule event emitted by the scheduler.  
+    - Import the newly created schedule event handler and call its listen method in (**event-reminder/server/src/scheduler/handlers/index.ts**) file as below (That's all):
+    
+```typescript
+//...scheduler handler imports
+import * as newScheduleHandler from './newScheduleHandler'; // import here
+
+
+const listen = (scheduler: Scheduler): void => {
+  // ... schedule handlers
+  newScheduleHandler.listen(scheduler); // Call listen and pass scheduler here
+};
+///...
+```  
       
 ***_2]Websocket (event-reminder/server/src/websocket)_*** 
 This module contains socket.io server (in **server.ts** file) and websocket message handler (in **messageHandler.ts** file)

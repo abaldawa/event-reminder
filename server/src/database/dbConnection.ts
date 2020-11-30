@@ -51,10 +51,6 @@ const createDBConnection = async (
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
-
-  // return new Promise((resolve, reject) => {
-  //   mongoose.connection.on('error', reject).once('open', resolve);
-  // });
 };
 
 export { createDBConnection };
